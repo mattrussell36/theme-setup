@@ -1,0 +1,5 @@
+body::after {
+    content: 'legacy styles entry - theme b';
+}
+
+@import './../../styles/module-a.scss';

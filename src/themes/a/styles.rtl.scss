@@ -1,0 +1,5 @@
+body::after {
+    content: 'style rtl entry - theme a'
+}
+
+@import './../../styles/module-b.scss'
