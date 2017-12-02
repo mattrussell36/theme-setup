@@ -1,0 +1,16 @@
+[
+    {
+        "name": "a",
+        "entry": [
+            "app",
+            "app.legacy"
+        ]
+    },
+    {
+        "name": "b",
+        "entry": [
+            "app",
+            "app.legacy"
+        ]
+    }
+]

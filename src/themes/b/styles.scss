@@ -1,6 +1,6 @@
 body::after {
     content: 'styles entry - theme b';
-    color: red;
+    color: green;
 }
 
 @import './../../styles/module-a.scss';

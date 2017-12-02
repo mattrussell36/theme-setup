@@ -1,11 +1,9 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const argv = require('minimist')(process.argv.slice(2));
+const THEMES = require('./config.themes.json');
 
-const extractStyles = new ExtractTextPlugin('styles.css');
-const extractStylesRTL = new ExtractTextPlugin('styles.rtl.css');
-const extractStylesLegacy = new ExtractTextPlugin('styles.legacy.css');
-const extractStylesLegacyRTL = new ExtractTextPlugin('styles.legacy.rtl.css');
+console.log(process.argv);
 
 const styleConfig = {
     fallback: 'style-loader',
@@ -19,21 +17,30 @@ const styleConfig = {
     ],
 };
 
-module.exports = () => {
-    const theme = argv.theme || 'b';
-    console.log(`Using theme: ${theme}`);
-    const srcDir = path.join(__dirname, 'src', 'themes', theme);
-    const buildDir = path.join(__dirname, 'build', theme);
+function createConfig (theme) {
+    const extractStyles = new ExtractTextPlugin('styles.css');
+    const extractStylesRTL = new ExtractTextPlugin('styles.rtl.css');
+    const extractStylesLegacy = new ExtractTextPlugin('styles.legacy.css');
+    const extractStylesLegacyRTL = new ExtractTextPlugin('styles.legacy.rtl.css');
+    
+    const plugins = [
+        extractStyles,
+        extractStylesRTL,
+        extractStylesLegacy,
+        extractStylesLegacyRTL,
+    ];
+
+    const entry = theme.entry.reduce((obj, file) => {
+        obj[file] = path.join(__dirname, 'src', 'themes', theme.name, file);
+        return obj;
+    }, {});
 
     return {
-        entry: {
-            app: path.join(srcDir, 'app.js'),
-            'app.legacy': path.join(srcDir, 'app.legacy.js'),
-        },
+        entry,
         output: {
             filename: '[name].bundle.js',
-            path: buildDir,
-            publicPath: buildDir,
+            path: path.join(__dirname, 'build', theme.name),
+            publicPath: path.join(__dirname, 'build', theme.name),
         },
         module: {
             rules: [
@@ -61,11 +68,8 @@ module.exports = () => {
                 }
             ],
         },
-        plugins: [
-            extractStyles,
-            extractStylesRTL,
-            extractStylesLegacy,
-            extractStylesLegacyRTL,
-        ],
+        plugins: plugins,
     };
-};
+}
+
+module.exports = THEMES.map(createConfig);
